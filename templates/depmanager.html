@@ -1,0 +1,130 @@
+{% extends 'adminbase.html' %}
+{% block main %}
+
+
+{% if user.is_authenticated and rowv%}
+            <p class="navbar-text pull-right">Welcome, {{ user.username }}</p>
+            <form class="navbar-form navbar-right" action="/adlogout/" method="post">
+              {% csrf_token %}
+              <button type="submit"  style="float:right" class="btn btn-default">Logout</button>
+            </form>
+
+          {% else %}
+          <div class="jumbotron" style="padding-top:100px;margin-top:150px;margin-left:200px">
+          <h3>Admin Login</h3><p></p>
+          <form  class="form-horizontal" action="/ad/" method="post">
+            {% csrf_token %}
+
+                <div class="form-group" >
+                  <label for="username" class="col-sm-8 col-form-label">Username:&nbsp;<sup style="color:red">*</sup></label>
+                  <div class="col-sm-10">
+                 <input type="text" class="form-control" name="username">
+               </div></div>
+               <div class="form-group" >
+                 <label for="password" class="col-sm-8 col-form-label">Password:&nbsp;<sup style="color:red">*</sup></label>
+                 <div class="col-sm-10">
+                <input type="password" class="form-control" name="password">
+                <button type="submit" class="btn btn-default">Login</button>
+              </div></div></form>
+
+            </div>
+
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated and rowv%}
+
+  <div class="sidenav" style="margin-top:50px">
+
+    <a href="/adduser/">Add new user</a>
+    <a href="/adchange_password/">Change Password</a>
+    <a href="/adprofileview/">View Profile of users</a>
+    <a href="/tenantview/">View Tenant Details</a>
+    <a href="/addmaintenance/">Add maintenance info</a>
+    <a href="/clubcancel/">Cancel club Memberships</a>
+    <a href="/club_events/">Add Club Events</a>
+    <a href="/delevents/">View and Delete Club Events</a>
+    <a href="/adviewcomplaints/">View and update status of Complaints</a>
+    <a href="/adnotification/">Add notifications</a>
+    <a href="/deletenotification/">Delete and view notifications</a>
+    <a href="/depmanager/">Update and view department details</a>
+
+  </div>
+  <div class="main">
+
+    <div class="jumbotron" style="padding-left:50px; padding-right:100px">
+      {% if saved %}
+       <span class="glyphicon glyphicon-ok" style="color:green"> Succesfully updated.</span>
+      {% else %}
+      <h3>Update department details:</h3><p></p>
+      <form  class="form-horizontal" action="/depmanager/" method="post">
+        {% csrf_token %}
+
+        <div class="form-group row" >
+          <label for="complaint_des" class="col-sm-2 col-form-label">Department: </label>
+
+ {% for r in data %}
+
+   <label><input type="radio" name="department" value={{r.0}}>&nbsp;{{r.0}}&nbsp;   </label>
+
+ {% endfor %}
+        </div>
+
+           <div class="form-group required" >
+             <label for="dep_maanger"class="col-sm-2 col-form-label">Department Manager:&nbsp;<sup style="color:red">*</sup></label>
+             <div class="col-sm-10">
+            <input type="text" class="form-control" name="dep_manager">
+
+          </div></div>
+
+            <div class="form-group required" >
+              <label for="dep_phone" class="col-sm-2 col-form-label">Phone:&nbsp;<sup style="color:red">*</sup></label>
+              <div class="col-sm-10">
+             <input type="text" class="form-control" name="dep_phone">
+           </div></div>
+           <div class="form-group required" >
+             <label for="dep_email" class="col-sm-2 col-form-label">Department Email:&nbsp;<sup style="color:red">*</sup></label>
+             <div class="col-sm-10">
+            <input type="text" class="form-control" name="dep_email">
+          </div></div>
+
+            <button type="submit" class="btn btn-default">Save</button>
+          </form>
+          {% if Invaliderror %}
+          <p style="color:red">Could not save..</p>
+          {% endif %}
+          {% if Invaliderr %}
+          <p style="color:red">Please complete the form..</p>
+          {% endif %}
+          <h3 style="font-weight:bold">Department Details:</h3>
+          <div style="overflow-x:auto;">
+          <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Department Name</th>
+                  <th>Phone</th>
+                   <th>Email</th>
+                   <th>Manager Id:</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in data %}
+                <tr>
+                  <td>{{row.0}}</td>
+                  <td>{{row.1}}</td>
+                  <td>{{row.2}}</td>
+                  <td>{{row.3}}</td>
+
+                </tr>
+                {%endfor%}
+
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+      </div>
+</div>
+
+{% endif %}
+{% endblock %}

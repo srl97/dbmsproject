@@ -1,0 +1,112 @@
+{% extends 'adminbase.html' %}
+{% block main %}
+
+
+{% if user.is_authenticated and rowv %}
+            <p class="navbar-text pull-right">Welcome, {{ user.username }}</p>
+            <form class="navbar-form navbar-right" action="/adlogout/" method="post">
+              {% csrf_token %}
+              <button type="submit"  style="float:right" class="btn btn-default">Logout</button>
+            </form>
+
+          {% else %}
+          <div class="jumbotron" style="padding-top:100px;margin-top:150px;margin-left:200px">
+          <h3>Admin Login</h3><p></p>
+          <form  class="form-horizontal" action="/ad/" method="post">
+            {% csrf_token %}
+
+                <div class="form-group" >
+                  <label for="username" class="col-sm-8 col-form-label">Username:&nbsp;<sup style="color:red">*</sup></label>
+                  <div class="col-sm-10">
+                 <input type="text" class="form-control" name="username">
+               </div></div>
+               <div class="form-group" >
+                 <label for="password" class="col-sm-8 col-form-label">Password:&nbsp;<sup style="color:red">*</sup></label>
+                 <div class="col-sm-10">
+                <input type="password" class="form-control" name="password">
+                <button type="submit" class="btn btn-default">Login</button>
+              </div></div></form></div>
+
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated and rowv %}
+
+  <div class="sidenav" style="margin-top:50px">
+
+    <a href="/adduser/">Add new user</a>
+    <a href="/adchange_password/">Change Password</a>
+    <a href="/adprofileview/">View Profile of users</a>
+    <a href="/tenantview/">View Tenant Details</a>
+    <a href="/addmaintenance/">Add maintenance info</a>
+    <a href="/clubcancel/">Cancel club Memberships</a>
+    <a href="/club_events/">Add Club Events</a>
+    <a href="/delevents/">View and Delete Club Events</a>
+    <a href="/adviewcomplaints/">View and update status of Complaints</a>
+    <a href="/adnotification/">Add notifications</a>
+    <a href="/deletenotification/">Delete and view notifications</a>
+    <a href="/depmanager/">Update and view department details</a>
+
+
+  </div>
+  <div class="main">
+
+    <div class="jumbotron" style="padding-left:50px; padding-right:100px">
+      {% if saved %}
+       <span class="glyphicon glyphicon-ok" style="color:green">You have added your notification successfully.</span>
+      {%else%}
+      <h3>Add club events:</h3><p></p>
+      <form  class="form-horizontal" action="/club_events/" method="post">
+        {% csrf_token %}
+
+            <div class="form-group required" >
+              <label for="event_name" class="col-sm-2 col-form-label">Event Name.:&nbsp;<sup style="color:red">*</sup></label>
+              <div class="col-sm-10">
+             <input type="text" class="form-control" name="event_name">
+           </div></div>
+           <div class="form-group">
+             <label for="event_date" class="col-sm-2 col-form-label">Date:&nbsp;<sup style="color:red">*</sup></label>
+                   <div class="col-sm-10">
+                    <input type='text' class="form-control"  name="event_date" id="datepicker">
+                </div>
+            </div>
+           <div class="form-group required" >
+             <label for="event_time"class="col-sm-2 col-form-label">Time:&nbsp;<sup style="color:red">*</sup></label>
+             <div class="col-sm-10">
+            <input type="text" class="form-control" name="event_time">
+
+          </div></div>
+
+            <div class="form-group required" >
+              <label for="event_venue" class="col-sm-2 col-form-label">Venue:&nbsp;<sup style="color:red">*</sup></label>
+              <div class="col-sm-10">
+             <input type="text" class="form-control" name="event_venue">
+           </div></div>
+           <div class="form-group required" >
+             <label for="event_des" class="col-sm-2 col-form-label">Description:&nbsp;<sup style="color:red">*</sup></label>
+             <div class="col-sm-10">
+            <input type="text" class="form-control" name="event_des">
+          </div></div>
+           <div class="form-group row" >
+             <label for="organising_team" class="col-sm-2 col-form-label">Organizer: </label>
+
+    {% for r in data %}
+
+      <label><input type="radio" name="organising_team" value={{r.0}}>&nbsp;{{r.0}}&nbsp;   </label>
+
+    {% endfor %}</div>
+            <button type="submit" class="btn btn-default">Save</button>
+          </form>{% endif %}
+          {% if Invaliderror %}
+          <p style="color:red">Please complete the form carefully..</p>
+          {% endif %}
+      </div>
+</div>
+<script>
+$( function() {
+    $( "#datepicker" ).datepicker();
+  } );
+  </script>
+
+{% endif %}
+{% endblock %}

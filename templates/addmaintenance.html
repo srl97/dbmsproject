@@ -1,0 +1,125 @@
+{% extends 'adminbase.html' %}
+{% block main %}
+
+
+{% if user.is_authenticated and rowv%}
+            <p class="navbar-text pull-right">Welcome, {{ user.username }}</p>
+            <form class="navbar-form navbar-right" action="/adlogout/" method="post">
+              {% csrf_token %}
+              <button type="submit"  style="float:right" class="btn btn-default">Logout</button>
+            </form>
+
+          {% else %}
+          <div class="jumbotron" style="padding-top:100px;margin-top:150px;margin-left:200px">
+          <h3>Admin Login</h3><p></p>
+          <form  class="form-horizontal" action="/ad/" method="post">
+            {% csrf_token %}
+
+                <div class="form-group" >
+                  <label for="username" class="col-sm-8 col-form-label">Username:&nbsp;<sup style="color:red">*</sup></label>
+                  <div class="col-sm-10">
+                 <input type="text" class="form-control" name="username">
+               </div></div>
+               <div class="form-group" >
+                 <label for="password" class="col-sm-8 col-form-label">Password:&nbsp;<sup style="color:red">*</sup></label>
+                 <div class="col-sm-10">
+                <input type="password" class="form-control" name="password">
+                <button type="submit" class="btn btn-default">Login</button>
+              </div></div></form></div>
+
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated and rowv%}
+
+  <div class="sidenav" style="margin-top:50px">
+
+    <a href="/adduser/">Add new user</a>
+    <a href="/adchange_password/">Change Password</a>
+    <a href="/adprofileview/">View Profile of users</a>
+    <a href="/tenantview/">View Tenant Details</a>
+    <a href="/addmaintenance/">Add maintenance info</a>
+    <a href="/clubcancel/">Cancel club Memberships</a>
+    <a href="/club_events/">Add Club Events</a>
+    <a href="/delevents/">View and Delete Club Events</a>
+    <a href="/adviewcomplaints/">View and update status of Complaints</a>
+    <a href="/adnotification/">Add notifications</a>
+    <a href="/deletenotification/">Delete and view notifications</a>
+    <a href="/depmanager/">Update and view department details</a>
+
+
+  </div>
+  <div class="main">
+
+    <div class="jumbotron" style="padding-left:50px; padding-right:100px">
+      {% if saved %}
+       <span class="glyphicon glyphicon-ok" style="color:green">You have added your maintenance bill successfully.</span>
+      {%else%}
+      <h3>Add maintenance for user:</h3><p></p>
+      <form  class="form-horizontal" action="/addmaintenance/" method="post">
+        {% csrf_token %}
+
+            <div class="form-group required" >
+              <label for="billnumber" class="col-sm-2 col-form-label">Bill Number:&nbsp;<sup style="color:red">*</sup></label>
+              <div class="col-sm-10">
+             <input type="text" class="form-control" name="billnumber">
+           </div></div>
+           <div class="form-group required" >
+             <label for="username"class="col-sm-2 col-form-label">Username:&nbsp;<sup style="color:red">*</sup></label>
+             <div class="col-sm-10">
+            <input type="text" class="form-control" name="username">
+            {% if Invaliduser %}
+            <span style="color:red">Invalid User!</span>
+            {% endif %}
+          </div></div>
+
+            <div class="form-group required" >
+              <label for="month" class="col-sm-2 col-form-label">Month&nbsp;<sup style="color:red">*</sup></label>
+              <div class="col-sm-10">
+             <input type="text" class="form-control" name="month">
+           </div></div>
+           <div class="form-group required" >
+             <label for="cleaning_charge" class="col-sm-2 col-form-label">Cleaning Charge:&nbsp;<sup style="color:red">*</sup></label>
+             <div class="col-sm-10">
+            <input type="text" class="form-control" name="cleaning_charge">
+          </div></div>
+          <div class="form-group required" >
+            <label for="electricity" class="col-sm-2 col-form-label">Electricity:&nbsp;<sup style="color:red">*</sup></label>
+            <div class="col-sm-10">
+           <input type="text" class="form-control" name="electricity">
+         </div></div>
+         <div class="form-group required" >
+           <label for="water_supply" class="col-sm-2 col-form-label">Water Supply:&nbsp;<sup style="color:red">*</sup></label>
+           <div class="col-sm-10">
+          <input type="text" class="form-control" name="water_supply">
+        </div></div>
+        <div class="form-group required" >
+          <label for="club_charges" class="col-sm-2 col-form-label">Club Charges:&nbsp;<sup style="color:red">*</sup></label>
+          <div class="col-sm-10">
+         <input type="text" class="form-control" name="club_charges">
+       </div></div>
+        <div class="form-group required" >
+          <label for="security" class="col-sm-2 col-form-label">Security:&nbsp;<sup style="color:red">*</sup></label>
+          <div class="col-sm-10">
+         <input type="text" class="form-control" name="security">
+       </div></div>
+       <div class="form-group required" >
+         <label for="penalty" class="col-sm-2 col-form-label">Penalty:&nbsp;<sup style="color:red">*</sup></label>
+         <div class="col-sm-10">
+        <input type="text" class="form-control" name="penalty">
+      </div></div>
+      <div class="form-group required" >
+        <label for="status" class="col-sm-2 col-form-label">Status:&nbsp;<sup style="color:red">*</sup></label>
+        <div class="col-sm-10">
+       <input type="text" class="form-control" name="status">
+     </div></div>
+            <button type="submit" class="btn btn-default">Save</button>
+          </form>{% endif %}
+          {% if Invaliderror %}
+          <p style="color:red">Please complete the form carefully..</p>
+          {% endif %}
+      </div>
+</div>
+
+{% endif %}
+{% endblock %}

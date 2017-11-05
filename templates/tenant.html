@@ -1,0 +1,107 @@
+{% extends 'newbase.html' %}
+{% block main %}
+
+
+{% if user.is_authenticated and rowv%}
+            <p class="navbar-text pull-right">Welcome, {{ user.username }}</p>
+            <form class="navbar-form navbar-right" action="/logoutuser/" method="post">
+              {% csrf_token %}
+              <button type="submit"  style="float:right" class="btn btn-default">Logout</button>
+            </form>
+
+
+
+            {% else %}
+            {% if invalid %}
+            <p class="navbar-text pull-right" style="color:red">Incorrect Details</p>
+            {% else %}
+            <p class="navbar-text pull-right" style="color:white">Please log in.</p>
+            {% endif %}
+
+<form class="navbar-form navbar-right" action="/loginuser/" method="post">
+  {% csrf_token %}
+      <div class="form-group" >
+        <span style="color:white">Username: </span><input type="text" class="form-control" name="username">
+      </div>
+      <div class="form-group">
+        <span style="color:white">Password: </span><input type="password" class="form-control" name="password">
+      </div>
+      <button type="submit" class="btn btn-default">Login</button>
+    </form>
+    {% endif %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated and rowv%}
+
+  <div class="sidenav">
+
+    <a href="/view/">Profile</a>
+    <a href="/change_password/">Change Password</a>
+    <a href="/profile/">Edit Details</a>
+    <a href="/clubs">Clubs</a>
+    <a href="/viewcomplaints/">Track your Complaints</a>
+    <a href="/complaintsregister/">Register Your Complaint</a>
+    <a href="/Maintenance">Maintainence</a>
+    <a href="/notifications/">Notifications</a>
+    <a href="/tenant/">Add/Update Tenant Details(if applicable)</a>
+    <a href="/depview/">View Department Details</a>
+    <a href="/deltenant/">View/Delete Tenant Details</a>
+
+  </div>
+  <div class="main" style="margin-left:230px">
+
+<div class="jumbotron" style="padding-left:50px;margin-top:100px; padding-right:100px">
+
+    {% if success %}
+     <span class="glyphicon glyphicon-ok" style="color:green"> You have added your tenant successfully.</span>
+     {% elif failure %}
+     <span class="glyphicon glyphicon-ok" style="color:red"> Tenant could not be added</span>
+    {%else%}
+  <h3>Please fill in the details of your tenant(if applicable) below for our reference</h3><p></p>
+  <form  class="form-horizontal" action="/tenant/" method="post">
+    {% csrf_token %}
+
+        <div class="form-group required" >
+          <label for="name" class="col-sm-2 col-form-label">Name&nbsp;<sup style="color:red">*</sup></label>
+          <div class="col-sm-10">
+         <input type="text" class="form-control" name="name" value={{rows.0}}>
+       </div></div>
+       <div class="form-group required" >
+         <label for="age" class="col-sm-2 col-form-label">Age&nbsp;<sup style="color:red">*</sup></label>
+         <div class="col-sm-10">
+        <input type="text" class="form-control" name="age" value={{rows.2}}>
+      </div></div>
+        {% if invalidage %}
+        <span style="color:red">Incorrect age value</span>
+        {% endif %}
+        <div class="form-group required" >
+          <label for="occupation" class="col-sm-2 col-form-label">Occupation&nbsp;<sup style="color:red">*</sup></label>
+          <div class="col-sm-10">
+         <input type="text" class="form-control" name="occupation" value={{rows.1}}>
+       </div></div>
+       <div class="form-group required" >
+         <label for="phone" class="col-sm-2 col-form-label">Phone&nbsp;<sup style="color:red">*</sup></label>
+         <div class="col-sm-10">
+        <input type="text" class="form-control" name="phone" value={{rows.3}}>
+      </div></div>{% if invalidphone %}
+        <span style="color:red">Incorrect phone value</span>
+        {% endif %}
+        <div class="form-group row" >
+          <label for="email" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+         <input type="text" class="form-control" name="email"value={{rows.4}}>
+       </div></div>
+        <button type="submit" class="btn btn-default">Save</button>
+      </form>
+      {% if Invalidrror %}
+      <p style="color:red">Please complete the form carefully..</p>
+      {% endif %}
+        {% endif %}
+  </div>
+{% else %}
+<p>Please log in to see the page</p>
+
+</div>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'newbase.html' %}
+{% block main %}
+
+
+{% if user.is_authenticated and rowv %}
+            <p class="navbar-text pull-right">Welcome, {{ user.username }}</p>
+            <form class="navbar-form navbar-right" action="/logoutuser/" method="post">
+              {% csrf_token %}
+              <button type="submit"  style="float:right" class="btn btn-default">Logout</button>
+            </form>
+
+
+
+            {% else %}
+            {% if invalid %}
+            <p class="navbar-text pull-right" style="color:red">Incorrect Details</p>
+            {% else %}
+            <p class="navbar-text pull-right" style="color:white">Please log in.</p>
+            {% endif %}
+
+<form class="navbar-form navbar-right" action="/loginuser/" method="post">
+  {% csrf_token %}
+      <div class="form-group" >
+        <span style="color:white">Username: </span><input type="text" class="form-control" name="username">
+      </div>
+      <div class="form-group">
+        <span style="color:white">Password: </span><input type="password" class="form-control" name="password">
+      </div>
+      <button type="submit" class="btn btn-default">Login</button>
+    </form>
+    {% endif %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated and rowv%}
+
+  <div class="sidenav">
+
+    <a href="/view/">Profile</a>
+    <a href="/change_password/">Change Password</a>
+    <a href="/profile/">Edit Details</a>
+    <a href="/clubs">Clubs</a>
+    <a href="/viewcomplaints/">Track your Complaints</a>
+    <a href="/complaintsregister/">Register Your Complaint</a>
+    <a href="/Maintenance">Maintainence</a>
+    <a href="/notifications/">Notifications</a>
+    <a href="/tenant/">Add/Update Tenant Details(if applicable)</a>
+    <a href="/depview/">View Department Details</a>
+    <a href="/deltenant/">View/Delete Tenant Details</a>
+
+
+  </div>
+  <div class="main" >
+
+<div class="container">
+<div class="jumbotron" style="padding-left:100px;margin-top:100px;">
+  {% if Invaliderror %}
+  <p>Sorry,nothing to display</p>
+  {% else %}
+
+  <br></br>
+  {% if success %}
+  <span class="glyphicon glyphicon-ok" style="color:green"> You are a a member now</span>
+  {% elif successdel %}
+  <span class="glyphicon glyphicon-ok" style="color:green"> Your request for cancellation has been accepted.You can view the details of your cancelled subscriptions.</span>
+  {% elif failuredel %}
+  <p style="color:red">Request for cancellation not accepted</p>
+  {% elif failure %}
+  <p style="color:red">Error in submission. Try again!</p>
+  {%else%}
+  <form action="/clubs/" method="post">
+    {% csrf_token %}
+    <h3>My Clubs</h3>
+    <div class="block1">
+  <div class="panel-group" id="accordion" style="padding-right:100px">
+    {% for rows in datayes %}
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a style="font-size:25px" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}">{{rows.0}}</a>
+        </h4>
+      </div>
+      <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
+        <div class="panel-body" >
+          <p style="font-weight:bold;font-size:16px" >Club Timings: {{rows.2}}</p>
+          <p style="font-weight:bold;font-size:16px">Club Venue: {{rows.3}}</p>
+          <p style="font-weight:bold;font-size:16px">Monthly Charges {{rows.1}}</p>
+          <p style="font-size:16px;font-weight:bold;color:green">Already a member</p>
+          <button type="submit" name="clubdel" value="{{rows.0}}" class="btn btn-danger">Cancel Subscription</button>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
+</div>
+<h3>Pending Requests for cancellation</h3>
+<div class="block3">
+<div class="panel-group" id="accordion" style="padding-right:100px">
+  {% for rowd in datacancel %}
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a style="font-size:25px" data-toggle="collapse" data-parent="#accordion" href="#collapsel{{ forloop.counter }}">{{rowd.0}}</a>
+      </h4>
+    </div>
+    <div id="collapsel{{ forloop.counter }}" class="panel-collapse collapse">
+      <div class="panel-body" >
+        <p style="font-weight:bold;font-size:16px" >Leaving Date: {{rowd.1}}</p>
+
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+</div>
+</div>
+<h3>Join</h3>
+<div class="block2">
+
+
+<div class="panel-group" id="accordions" style="padding-right:100px">
+  {% for rowl in datano %}
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a style="font-size:25px" data-toggle="collapse" data-parent="#accordions" href="#collapses{{ forloop.counter }}">{{rowl.0}}</a>
+        </h4>
+      </div>
+      <div id="collapses{{ forloop.counter }}" class="panel-collapse collapse">
+        <div class="panel-body" >
+          <p style="font-weight:bold;font-size:16px" >Club Timings: {{rowl.2}}</p>
+          <p style="font-weight:bold;font-size:16px">Club Venue: {{rowl.3}}</p>
+          <p style="font-weight:bold;font-size:16px">Monthly Charges {{rowl.1}}</p>
+
+          <button type="submit" name="club" value="{{rowl.0}}" class="btn btn-primary">Be a member</button>
+
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+</form>
+<div class="panel-group">
+  <div class="panel panel-success">
+    <div class="panel-heading"style="font-size:30px">My Club Events</div>
+  </div>
+  {% for x in rowevent %}
+
+<div class="panel panel-warning">
+  <div class="panel-heading"style="font-size:30px"><span class="glyphicon glyphicon-calendar"></span> {{x.1}}    {{x.2}}  {{x.0}}</div>
+  <div class="panel-body"><p style="font-weight:bold ;font-size:16px">Venue: {{x.3}}</p>
+  <p style="font-weight:bold ;font-size:16px">Organized by: {{x.5}}</p>
+<p style="font-size:16px">{{x.4}}</p></div>
+</div>
+{%endfor%}
+</div>
+  {% endif %}
+{%endif%}
+
+{% else %}
+<p>Please log in to see the page</p>
+
+</div>
+</div>
+{% endif %}
+{% endblock %}
